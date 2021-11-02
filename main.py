@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Depends
 from fastapi.middleware.cors import CORSMiddleware
-from model import (newbody,updatenewbody)
-from db import (insert_info,get_all_info,get_info_by_id,update_info_by_id,delete_info_by_id)
+from model import (newbody,updatenewbody,loginbody,todo,todoupdate)
+from db import (insert_info,get_all_info,get_info_by_id,update_info_by_id,delete_info_by_id,verify_login,post_todo,update_todo)
 
 app = FastAPI()
 
@@ -38,13 +38,24 @@ def Get_info_by_id(uid : str):
     return {"Message":"Retrieved Successfully","Body":get_info_by_id(uid)}
    
 
-@app.post("/info")
+@app.post("/register")
 def Upload_info(body : newbody = Depends(newbody.as_form)):
-    insert_info(body.dict())
-    return {"Message":"Posted Successfully","Body":body.dict()}
+    a=insert_info(body.dict())
+    if a:
+        return {"Message":"Successfully Registered"}
+    else:
+        return {"Message":"Failed to Register"}
+
+@app.post("/login")
+def Verify_login(body : loginbody = Depends(loginbody.as_form)):
+    a=verify_login(body.dict())
+    if a:
+        return {"Message":"Successfully Logged in"}
+    else:
+        return {"Message":"Failed to Log in"}
 
 @app.put("/info/{uid}")
-def Update_info_by_id(uid,body : updatenewbody = Depends(updatenewbody.as_form)):
+def Update_info_by_id(uid:str,body : updatenewbody = Depends(updatenewbody.as_form)):
     update_info_by_id(uid,body.dict())
     return {"Message":"Updated Successfully"}
 
@@ -52,3 +63,13 @@ def Update_info_by_id(uid,body : updatenewbody = Depends(updatenewbody.as_form))
 def Delete_info_by_id(uid : str):
     delete_info_by_id(uid)
     return {"Message":"Deleted Successfully"}
+
+@app.post("/todo")
+def Post_todo(body : todo = Depends(todo.as_form)):
+    post_todo(body.dict())
+    return {"Message":"Successfully Posted"}
+
+@app.put("/todo/{uid}")
+def Update_todo(uid:str,body : todoupdate = Depends(todoupdate.as_form)):
+    update_todo(uid,body.dict())
+    return {"Message":"Updated Successfully"}

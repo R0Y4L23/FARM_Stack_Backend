@@ -1,7 +1,8 @@
 import inspect
-from typing import Type,Optional
+from typing import Type,Optional,List
 from fastapi import Form
 from pydantic import BaseModel
+from datetime import datetime
 
 
 def as_form(cls: Type[BaseModel]):
@@ -26,11 +27,42 @@ def as_form(cls: Type[BaseModel]):
 @as_form
 class newbody(BaseModel):
     name : str
+    username : str
+    password : str
+    email : str
     age : int
+    connections : List[str] = []
 
 @as_form
 class updatenewbody(BaseModel):
     name : Optional[str]
     age : Optional[int]
+
+@as_form
+class loginbody(BaseModel):
+    email : str
+    password : str
+
+@as_form
+class todo(BaseModel):
+    title : str
+    description : str
+    status : str = "Pending"
+    deadline : str
+    createdon: str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    createdby: str
+    sharedto: List[str]=[]
+    updated : bool = False
+
+@as_form
+class todoupdate(BaseModel):
+    title : Optional[str]
+    description : Optional[str]
+    status : Optional[str]
+    deadline : Optional[str]
+    createdon: str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    updated : bool = True
+    sharedto: Optional[List[str]]
+
    
         
