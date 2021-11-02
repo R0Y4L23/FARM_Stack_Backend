@@ -40,7 +40,7 @@ def get_all_info():
     return a
 
 def get_info_by_id(uid):
-    data = mycol.find_one({"_id":ObjectId(uid)},{"name":1,"age":1,"_id":0})
+    data = mycol.find_one({"email":uid},{"name":1,"age":1,"_id":0,"username":1})
     return data
 
 def update_info_by_id(uid,body):
@@ -48,10 +48,10 @@ def update_info_by_id(uid,body):
     for key in body:
         if body[key]!=None:
             a[key]=body[key]
-    mycol.update_one({"_id":ObjectId(uid)},{"$set":a})
+    mycol.update_one({"email":uid},{"$set":a})
 
 def delete_info_by_id(uid):
-    mycol.delete_one({"_id":ObjectId(uid)})
+    mycol.delete_one({"email":uid})
 
 def post_todo(data):
     todoCol.insert_one(data)
